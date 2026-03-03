@@ -86,6 +86,8 @@ body {
     font-size: .8rem; text-transform: uppercase;
     letter-spacing: .12em; opacity: .65; flex-shrink: 0;
 }
+
+/* Desktop nav */
 nav {
     flex: 1; display: flex; flex-wrap: wrap; gap: 1rem;
     font-size: .8rem;
@@ -102,6 +104,53 @@ nav a::after {
 }
 nav a:hover { color: var(--accent); }
 nav a:hover::after { width: 100%; }
+
+/* ── Hamburger button ─────────────────────────────────────────── */
+#hamburger {
+    display: none;
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid var(--muted);
+    color: var(--text);
+    border-radius: 4px;
+    width: 1.7rem; height: 1.7rem;
+    align-items: center; justify-content: center;
+    font-size: .75rem;
+    transition: border-color var(--ease), color var(--ease);
+    flex-direction: column;
+    gap: 3px;
+    padding: 4px;
+}
+#hamburger:hover { border-color: var(--accent); color: var(--accent); }
+#hamburger span {
+    display: block; width: 100%; height: 1px;
+    background: currentColor;
+    transition: transform .2s, opacity .2s;
+}
+#hamburger.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+#hamburger.open span:nth-child(2) { opacity: 0; }
+#hamburger.open span:nth-child(3) { transform: translateY(-4px) rotate(-45deg); }
+
+/* Mobile nav drawer */
+#mobile-nav {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--muted);
+    padding: .5rem var(--sp);
+    margin: 0 calc(-1*var(--sp));
+    transition: background .3s;
+}
+#mobile-nav.open { display: flex; }
+#mobile-nav a {
+    color: var(--text); text-decoration: none;
+    font-size: .85rem; padding: .4rem 0;
+    border-bottom: 1px solid var(--muted);
+    transition: color var(--ease);
+}
+#mobile-nav a:last-child { border-bottom: none; }
+#mobile-nav a:hover { color: var(--accent); }
 
 #theme-btn {
     flex-shrink: 0; background: none;
@@ -162,8 +211,67 @@ a:hover { border-color: var(--accent); }
     border-top: 1px solid var(--muted);
 }
 
-/* ── Project cards ───────────────────────────────────────────── */
-/* Original style: vertical list, left accent border, dividers between items */
+/* ── FEATURED project cards ──────────────────────────────────── */
+.featured-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--sp)*.75);
+    margin-bottom: calc(var(--sp)*1.1);
+}
+.featured-card {
+    border: 1px solid var(--muted);
+    padding: calc(var(--sp)*.75);
+    position: relative;
+    transition: border-color var(--ease), transform var(--ease);
+    background: transparent;
+}
+.featured-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+.featured-badge {
+    font-size: .58rem; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--accent);
+    opacity: .8; margin-bottom: .4rem;
+}
+.featured-card h3 {
+    font-size: 1rem; font-weight: 700;
+    margin-bottom: .3rem; line-height: 1.2;
+}
+.featured-card h3 a {
+    color: var(--text) !important;
+    border: none !important;
+    transition: color var(--ease);
+}
+.featured-card h3 a:hover { color: var(--accent) !important; }
+.featured-card p {
+    font-size: .75rem; opacity: .6;
+    line-height: 1.5; margin-bottom: .6rem;
+}
+.featured-links {
+    display: flex; gap: .75rem; align-items: center;
+}
+.featured-links a {
+    font-size: .72rem; color: var(--text) !important;
+    border-bottom: 1px solid var(--muted) !important;
+    transition: color var(--ease), border-color var(--ease);
+}
+.featured-links a:hover {
+    color: var(--accent) !important;
+    border-color: var(--accent) !important;
+}
+.featured-links a.gh-link {
+    color: var(--accent) !important;
+    border: none !important;
+    font-size: 1rem;
+    transition: color var(--ease), transform var(--ease);
+}
+.featured-links a.gh-link:hover {
+    color: var(--accent) !important;
+    transform: scale(1.15);
+}
+
+/* ── Project cards (standard) ────────────────────────────────── */
 ul.cards {
     list-style: none;
     padding: 0; margin: 0;
@@ -174,20 +282,17 @@ ul.cards li {
     align-items: center;
     justify-content: space-between;
     padding: .5rem 0 .5rem var(--sp);
-    border-bottom: none; /* reset any inherited border */
     border-top: 1px solid var(--muted);
     transition: border-left-color var(--ease), transform var(--ease);
-    /* reset list item styles that might interfere */
     position: static;
 }
 ul.cards li:first-child { border-top: none; }
 ul.cards li:hover { transform: translateX(3px); }
 ul.cards:has(li:hover) { border-left-color: var(--accent); }
 
-/* The project/game/app title link — text color, NOT accent */
 ul.cards li > a:first-child {
     flex: 1;
-    color: var(--text) !important; /* override global a { color: accent } */
+    color: var(--text) !important;
     font-size: .92rem;
     border-bottom: none !important;
     transition: color var(--ease);
@@ -197,9 +302,8 @@ ul.cards li > a:first-child:hover {
     border-color: transparent !important;
 }
 
-/* GitHub icon */
 ul.cards li > a.gh {
-    color: var(--muted) !important;
+    color: var(--accent) !important;
     font-size: 1.05rem;
     border: none !important;
     flex-shrink: 0;
@@ -210,6 +314,13 @@ ul.cards li > a.gh:hover {
     transform: scale(1.15);
 }
 
+/* ── Section label for "rest of projects" ─────────────────────── */
+.section-sublabel {
+    font-size: .63rem; text-transform: uppercase;
+    letter-spacing: .12em; opacity: .35;
+    margin-bottom: calc(var(--sp)*.4);
+}
+
 /* ── GitHub graph ────────────────────────────────────────────── */
 .graph-wrap { overflow-x: auto; }
 .graph-wrap img {
@@ -217,10 +328,7 @@ ul.cards li > a.gh:hover {
     opacity: .8; transition: opacity .3s;
 }
 .graph-wrap img:hover { opacity: 1; }
-[data-theme="dark"] .graph-wrap img {
-    filter: invert(1) hue-rotate(180deg); opacity: .7;
-}
-[data-theme="dark"] .graph-wrap img:hover { opacity: 1; }
+
 
 /* ── Connect ─────────────────────────────────────────────────── */
 .connect-grid {
@@ -230,36 +338,80 @@ ul.cards li > a.gh:hover {
 }
 .clabel {
     font-size: .68rem; text-transform: uppercase;
-    letter-spacing: .1em; opacity: .42; margin-bottom: .7rem;
+    letter-spacing: .1em; opacity: .42; margin-bottom: .9rem;
 }
+
+/* ── Social pills ─────────────────────────────────────────────── */
 .social-row {
     list-style: none; padding: 0;
-    display: flex; flex-wrap: wrap; gap: .9rem;
+    display: flex; flex-direction: column; gap: .45rem;
 }
 .social-row li { border: none; padding: 0; margin: 0; }
 .social-row a {
-    display: flex; flex-direction: column;
-    align-items: center; gap: .22rem;
-    color: var(--accent) !important; border: none !important;
-    transition: color var(--ease), transform var(--ease);
+    display: flex; align-items: center; gap: .6rem;
+    padding: .38rem .6rem;
+    border: 1px solid var(--muted) !important;
+    border-radius: 3px;
+    color: var(--text) !important;
+    text-decoration: none;
+    font-size: .8rem;
+    transition: border-color var(--ease), color var(--ease),
+                background var(--ease), transform var(--ease);
 }
-.social-row a:hover { color: var(--text) !important; transform: translateY(-2px); }
-.social-row i { font-size: 1.3rem; }
-.social-row span { font-size: .58rem; opacity: .65; }
+.social-row a:hover {
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+    transform: translateX(3px);
+}
+.social-row i { font-size: 1rem; color: var(--accent); flex-shrink: 0; }
+.social-row span { font-size: .8rem; }
 
+/* ── Coding profile pills ─────────────────────────────────────── */
 .link-list {
     list-style: none; padding: 0;
-    display: flex; flex-direction: column; gap: .4rem;
+    display: flex; flex-direction: column; gap: .45rem;
 }
 .link-list li { border: none; padding: 0; margin: 0; }
 .link-list a {
-    color: var(--text) !important; font-size: .88rem;
-    border-bottom: 1px solid var(--muted) !important;
-    transition: color var(--ease), border-color var(--ease);
+    display: flex; align-items: center; gap: .6rem;
+    padding: .38rem .6rem;
+    border: 1px solid var(--muted) !important;
+    border-radius: 3px;
+    color: var(--text) !important;
+    font-size: .8rem;
+    text-decoration: none;
+    transition: border-color var(--ease), color var(--ease), transform var(--ease);
 }
-.link-list a:hover { color: var(--accent) !important; border-color: var(--accent) !important; }
+.link-list a:hover {
+    color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    transform: translateX(3px);
+}
+.link-list a i { font-size: .9rem; color: var(--accent); flex-shrink: 0; width: 1rem; text-align: center; }
+.link-list a svg { width: .9rem; height: .9rem; flex-shrink: 0; fill: var(--accent); }
 
-
+/* ── Secret / Spotify link ────────────────────────────────────── */
+.spotify-link {
+    display: flex; align-items: center; gap: .6rem;
+    padding: .45rem .7rem;
+    border: 1px solid #1DB954 !important;
+    border-radius: 3px;
+    color: #1DB954 !important;
+    font-size: .8rem;
+    text-decoration: none;
+    margin-top: .45rem;
+    transition: background var(--ease), color var(--ease), transform var(--ease);
+    position: relative;
+    overflow: hidden;
+}
+.spotify-link:hover {
+    background: #1DB954;
+    color: #000 !important;
+    transform: translateX(3px);
+    border-color: #1DB954 !important;
+}
+.spotify-link i { font-size: 1rem; flex-shrink: 0; }
+.spotify-link .sp-label { font-size: .75rem; opacity: .6; margin-left: auto; font-style: italic; }
 
 /* ── Footer ──────────────────────────────────────────────────── */
 footer {
@@ -267,9 +419,45 @@ footer {
     padding-top: var(--sp);
     border-top: 2px solid var(--muted);
     text-align: center; font-size: .85rem; opacity: .65;
+    display: flex; flex-direction: column; align-items: center; gap: .6rem;
 }
-footer i { color: var(--accent); transition: color var(--ease), transform var(--ease); }
-footer i:hover { color: var(--text); transform: scale(1.2); }
+footer p { display: flex; align-items: center; gap: .4rem; }
+#heart-btn {
+    background: none; border: none;
+    padding: 0; line-height: 1;
+    display: inline-flex; align-items: center;
+}
+#heart-icon {
+    color: var(--accent);
+    font-size: 1.1rem;
+    transition: transform .15s, color .15s;
+    display: inline-block;
+}
+#heart-btn:hover #heart-icon { transform: scale(1.25); }
+#heart-btn.beat #heart-icon {
+    animation: heartBeat .35s ease-out;
+}
+@keyframes heartBeat {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(1.5); }
+    60%  { transform: scale(.9); }
+    100% { transform: scale(1); }
+}
+#spotify-reveal {
+    font-size: .75rem;
+    color: #1DB954 !important;
+    border: 1px solid #1DB954 !important;
+    border-radius: 3px;
+    padding: .3rem .75rem;
+    display: flex; align-items: center; gap: .4rem;
+    transition: background var(--ease), color var(--ease);
+    animation: fadeSlideUp .4s ease-out;
+}
+#spotify-reveal:hover { background: #1DB954; color: #000 !important; }
+@keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
 
 /* ── Flying hearts ───────────────────────────────────────────── */
 .heart {
@@ -304,14 +492,65 @@ footer i:hover { color: var(--text); transform: scale(1.2); }
     to   { opacity:0; transform: translateX(-50%) translateY(8px); }
 }
 
+/* ── Easter egg overlay ──────────────────────────────────────── */
+#easter-egg {
+    display: none;
+    position: fixed; inset: 0;
+    background: var(--bg);
+    z-index: 20000;
+    align-items: center; justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: var(--sp);
+    animation: fadeIn .4s ease-out;
+}
+#easter-egg.open { display: flex; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.egg-inner {
+    max-width: 42ch;
+}
+.egg-inner .egg-label {
+    font-size: .65rem; text-transform: uppercase;
+    letter-spacing: .2em; opacity: .4; margin-bottom: 1.2rem;
+}
+.egg-inner h2 {
+    font-size: 1.4rem; font-weight: 700;
+    text-transform: none; letter-spacing: 0;
+    opacity: 1; margin-bottom: 1rem; line-height: 1.3;
+}
+.egg-inner p {
+    font-size: .85rem; opacity: .7; line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+.egg-inner .egg-ascii {
+    font-size: .75rem; opacity: .35;
+    line-height: 1.4; margin-bottom: 1.5rem;
+    white-space: pre;
+}
+#egg-close {
+    background: none;
+    border: 1px solid var(--muted);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: .78rem;
+    padding: .4rem 1rem;
+    transition: border-color var(--ease), color var(--ease);
+}
+#egg-close:hover { border-color: var(--accent); color: var(--accent); }
+
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 640px) {
     :root { --sp: 1rem; }
     body  { font-size: .9rem; }
     h1    { font-size: 1.4rem; }
-    nav   { gap: .6rem; font-size: .72rem; }
-    .connect-grid { grid-template-columns: 1fr; gap: var(--sp); }
     #cur-dot, #cur-ring { display: none; }
+
+    /* hide desktop nav, show hamburger */
+    nav { display: none; }
+    #hamburger { display: flex; }
+
+    .featured-grid { grid-template-columns: 1fr; }
+    .connect-grid { grid-template-columns: 1fr; gap: var(--sp); }
 }
     </style>
 </head>
@@ -321,21 +560,58 @@ footer i:hover { color: var(--text); transform: scale(1.2); }
 <div id="cur-dot"></div>
 <div id="cur-ring"></div>
 
+<!-- Easter egg overlay -->
+<div id="easter-egg">
+    <div class="egg-inner">
+        <p class="egg-label">// you found it</p>
+        <div class="egg-ascii">  (\(\
+  ( -.-)
+  o_(")(")  </div>
+        <h2>hey, you're nosy. i like that.</h2>
+        <p>
+            most people never click "secret link".<br>
+            you did. that probably means you're curious, a little stubborn, and maybe slightly chaotic.<br><br>
+            same, honestly.
+        </p>
+        <p style="opacity:.45; font-size:.75rem;">
+            there's no prize here. just this message.<br>
+            and the quiet satisfaction of knowing you looked.
+        </p>
+        <button id="egg-close">← go back</button>
+    </div>
+</div>
+
 <header class="hdr">
     <div class="hdr-inner">
         <span class="hdr-title">shivansh's works</span>
+        <!-- Desktop nav -->
         <nav>
             <a href="#about">about</a>
-            <a href="#projects">web</a>
-            <a href="#games">games</a>
+            <a href="#featured">featured</a>
+            <a href="#web-utility">utility</a>
+            <a href="#web-artsy">artsy</a>
             <a href="#apps">apps</a>
             <a href="#extensions">extensions</a>
             <a href="#connect">connect</a>
         </nav>
+        <!-- Mobile hamburger -->
+        <button id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
         <button id="theme-btn" aria-label="Toggle theme">
             <span id="theme-icon"><i class="fas fa-moon"></i></span>
         </button>
     </div>
+    <!-- Mobile nav drawer -->
+    <nav id="mobile-nav" aria-hidden="true">
+        <a href="#about">about</a>
+        <a href="#featured">featured</a>
+        <a href="#web-utility">utility</a>
+        <a href="#web-artsy">artsy</a>
+        <a href="#apps">apps</a>
+        <a href="#extensions">extensions</a>
+        <a href="#connect">connect</a>
+    </nav>
 </header>
 
 <main>
@@ -352,32 +628,83 @@ footer i:hover { color: var(--text); transform: scale(1.2); }
         </p>
     </section>
 
-    <section id="projects" class="sec">
-        <h2><a href="/projects">my web-dev projects</a></h2>
+    <!-- ── Featured ─────────────────────────────────────────── -->
+    <section id="featured" class="sec">
+        <h2>featured</h2>
+        <div class="featured-grid">
+            <div class="featured-card">
+                <p class="featured-badge">★ featured</p>
+                <h3><a href="https://leet-trackr-one.vercel.app" target="_blank">leet tracker</a></h3>
+                <p>track your leetcode progress, streaks, and stats in one clean dashboard.</p>
+                <div class="featured-links">
+                    <a href="https://leet-trackr-one.vercel.app" target="_blank">live ↗</a>
+                    <a href="https://github.com/ShiiiivanshSingh/LeetTrackr" class="gh-link" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="featured-card">
+                <p class="featured-badge">★ featured</p>
+                <h3><a href="https://legalchamps.vercel.app/" target="_blank">legal champs.</a></h3>
+                <p>hackathon project making legal information more accessible and understandable.</p>
+                <div class="featured-links">
+                    <a href="https://legalchamps.vercel.app/" target="_blank">live ↗</a>
+                    <a href="https://github.com/ShiiiivanshSingh/TECHNOVATION-HACKATHON-2025-Entry" class="gh-link" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="featured-card">
+                <p class="featured-badge">★ featured</p>
+                <h3><a href="https://shiiiivanshsingh.github.io/magnolia-weather/" target="_blank">magnolia weather</a></h3>
+                <p>a cinematic weather app presenting real-time conditions as slow, film-inspired atmospheric scenes.</p>
+                <div class="featured-links">
+                    <a href="https://shiiiivanshsingh.github.io/magnolia-weather/" target="_blank">live ↗</a>
+                    <a href="https://github.com/ShiiiivanshSingh/magnolia-weather" class="gh-link" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="featured-card">
+                <p class="featured-badge">★ featured</p>
+                <h3><a href="https://shiiiivanshsingh.github.io/art/" target="_blank">random museum art</a></h3>
+                <p>fetches random artworks from the met museum api with popular and explorer modes.</p>
+                <div class="featured-links">
+                    <a href="https://shiiiivanshsingh.github.io/art/" target="_blank">live ↗</a>
+                    <a href="https://github.com/ShiiiivanshSingh/art" class="gh-link" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Web: Utility ─────────────────────────────────────── -->
+    <section id="web-utility" class="sec">
+        <h2>web — utility &amp; tools</h2>
         <ul class="cards">
-            <li><a href="https://legalchamps.vercel.app/" target="_blank">legal champs.</a><a href="https://github.com/ShiiiivanshSingh/TECHNOVATION-HACKATHON-2025-Entry" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
             <li><a href="https://leet-trackr-one.vercel.app" target="_blank">leet tracker</a><a href="https://github.com/ShiiiivanshSingh/LeetTrackr" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
+            <li><a href="https://legalchamps.vercel.app/" target="_blank">legal champs.</a><a href="https://github.com/ShiiiivanshSingh/TECHNOVATION-HACKATHON-2025-Entry" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
             <li><a href="https://shiiiivanshsingh.github.io/img2txt/" target="_blank">image to text</a><a href="https://github.com/ShiiiivanshSingh/img2txt" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
             <li><a href="https://pomodoro-app-ten-kappa.vercel.app" target="_blank">focus buddy</a><a href="https://github.com/ShiiiivanshSingh/Pomodoro-App" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
             <li><a href="https://shiiiivanshsingh.github.io/Python-File-Sharing/WEB/fp.html" target="_blank">quick share</a><a href="https://github.com/ShiiiivanshSingh/Python-File-Sharing" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
             <li><a href="https://shiiiivanshsingh.github.io/GenQR/" target="_blank">gen qr</a><a href="https://github.com/ShiiiivanshSingh/GenQR" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
-            <li><a href="https://chrono-craft-mu.vercel.app" target="_blank">chrono craft</a><a href="https://github.com/ShiiiivanshSingh/ChronoCraft" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
             <li><a href="https://shiiiivanshsingh.github.io/CashCatcher/index.html" target="_blank">expense tracker</a><a href="https://github.com/ShiiiivanshSingh/CashCatcher" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
-            <li><a href="https://shiiiivanshsingh.github.io/SMify/Hausla%20-%20Seedhe%20Maut/" target="_blank">smify</a><a href="https://github.com/ShiiiivanshSingh/SMify" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
             <li><a href="https://shiiiivanshsingh.github.io/TaskPop/" target="_blank">taskpop</a><a href="https://github.com/ShiiiivanshSingh/TaskPop" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
-            <li><a href="https://shiiiivanshsingh.github.io/Overdrop/" target="_blank">overdrop</a><a href="https://github.com/ShiiiivanshSingh/Overdrop" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
+            <li><a href="https://github.com/ShiiiivanshSingh/ClearVision/tree/main/DEMO#demo-img" target="_blank">clearvision</a><a href="https://github.com/ShiiiivanshSingh/ClearVision" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
         </ul>
     </section>
 
-    <section id="games" class="sec">
-        <h2><a href="/games">games and guides i've worked on</a></h2>
+    <!-- ── Web: Fun / Artsy ──────────────────────────────────── -->
+    <section id="web-artsy" class="sec">
+        <h2>web — fun &amp; artsy</h2>
         <ul class="cards">
+            <li><a href="https://shiiiivanshsingh.github.io/magnolia-weather/" target="_blank">magnolia weather</a><a href="https://github.com/ShiiiivanshSingh/magnolia-weather" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
+            <li><a href="https://shiiiivanshsingh.github.io/art/" target="_blank">random museum art</a><a href="https://github.com/ShiiiivanshSingh/art" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
+            <li><a href="https://shiiiivanshsingh.github.io/nasa-img/" target="_blank">nasa image explorer</a><a href="https://github.com/ShiiiivanshSingh/nasa-img" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
+            <li><a href="https://shiiiivanshsingh.github.io/dvd/main.html" target="_blank">dvd logo visuals</a><a href="https://github.com/ShiiiivanshSingh/dvd" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
+            <li><a href="https://shiiiivanshsingh.github.io/SMify/Hausla%20-%20Seedhe%20Maut/" target="_blank">smify</a><a href="https://github.com/ShiiiivanshSingh/SMify" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
+            <li><a href="https://chrono-craft-mu.vercel.app" target="_blank">chrono craft</a><a href="https://github.com/ShiiiivanshSingh/ChronoCraft" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
+            <li><a href="https://shiiiivanshsingh.github.io/Overdrop/" target="_blank">overdrop</a><a href="https://github.com/ShiiiivanshSingh/Overdrop" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
             <li><a href="https://callouts-gg.netlify.app/" target="_blank">counter strike callout generator</a><a href="https://github.com/ShiiiivanshSingh/Counter-Strike-Map-Callout-Guide" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
             <li><a href="https://shiiiivanshsingh.github.io/EZVeto/" target="_blank">counter strike map veto sim</a><a href="https://github.com/ShiiiivanshSingh/EZVeto" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
             <li><a href="https://shiiiivanshsingh.github.io/Flag-Guess-/game.html" target="_blank">flag guess</a><a href="https://github.com/ShiiiivanshSingh/Flag-Guess-" class="gh" target="_blank" rel="noopener"><i class="fab fa-github"></i></a></li>
         </ul>
     </section>
 
+    <!-- ── Mobile Apps ───────────────────────────────────────── -->
     <section id="apps" class="sec">
         <h2>mobile apps i've worked on</h2>
         <ul class="cards">
@@ -397,20 +724,18 @@ footer i:hover { color: var(--text); transform: scale(1.2); }
 
     <section id="github" class="sec">
         <h2>github activity</h2>
-    
         <div class="graph-wrap">
             <a href="https://github.com/ShiiiivanshSingh" target="_blank" rel="noopener">
-                <img 
-                    src="https://ghchart.rshah.org/f5f/ShiiiivanshSingh" 
-                  
+                <img
+                    id="gh-graph"
+                    src="https://ghchart.rshah.org/D6536D/ShiiiivanshSingh"
                     alt="Contribution graph for ShiiiivanshSingh on GitHub"
                     loading="lazy"
                     onerror="this.style.display='none'; document.getElementById('gh-fallback').style.display='block';"
                 >
             </a>
-    
             <p id="gh-fallback" style="display:none;">
-                Unable to load contribution graph. 
+                Unable to load contribution graph.
                 <a href="https://github.com/ShiiiivanshSingh" target="_blank">View profile directly</a>.
             </p>
         </div>
@@ -419,43 +744,49 @@ footer i:hover { color: var(--text); transform: scale(1.2); }
     <section id="connect" class="sec">
         <h2>connect</h2>
         <div class="connect-grid">
+
+            <!-- Socials -->
             <div>
                 <p class="clabel">socials</p>
                 <ul class="social-row">
                     <li><a href="https://github.com/ShiiiivanshSingh" target="_blank"><i class="fab fa-github"></i><span>github</span></a></li>
                     <li><a href="https://www.linkedin.com/in/shivansh-pratap-singh-23b3b92b1" target="_blank"><i class="fab fa-linkedin"></i><span>linkedin</span></a></li>
-                    <li><a href="https://x.com/de_mirage_fan" target="_blank"><i class="fab fa-twitter"></i><span>twitter</span></a></li>
+                    <li><a href="https://x.com/de_mirage_fan" target="_blank"><i class="fab fa-twitter"></i><span>twitter / x</span></a></li>
                     <li><a href="https://www.instagram.com/shivansh___siingh" target="_blank"><i class="fab fa-instagram"></i><span>instagram</span></a></li>
                     <li><a href="https://www.youtube.com/@shivanshpratapsingh" target="_blank"><i class="fab fa-youtube"></i><span>youtube</span></a></li>
+                    <li><a href="https://letterboxd.com/ShivanshSingh" target="_blank"><i class="fas fa-film"></i><span>letterboxd</span></a></li>
                 </ul>
             </div>
+
+            <!-- Coding profiles -->
             <div>
                 <p class="clabel">coding profiles</p>
                 <ul class="link-list">
-                    <li><a href="https://leetcode.com/u/ShivanshPratapSingh/" target="_blank" rel="noopener">leetcode</a></li>
-                    <li><a href="https://codolio.com/profile/sh1vansh" target="_blank" rel="noopener">dsa stats</a></li>
-                    <li><a href="https://www.geeksforgeeks.org/user/shivanshpratt8cf" target="_blank" rel="noopener">geeksforgeeks</a></li>
-                    <li><a href="https://devfolio.co/@ShivanshOF" target="_blank" rel="noopener">devfolio</a></li>
-                    <li><a href="https://letsupgrade.in/user/sh1vanshgg" target="_blank" rel="noopener">letsupgrade</a></li>
+                    <li><a href="https://leetcode.com/u/ShivanshPratapSingh/" target="_blank" rel="noopener"><i class="fas fa-code"></i>leetcode</a></li>
+                    <li><a href="https://codolio.com/profile/sh1vansh" target="_blank" rel="noopener"><i class="fas fa-chart-bar"></i>dsa stats</a></li>
+                    <li><a href="https://www.geeksforgeeks.org/user/shivanshpratt8cf" target="_blank" rel="noopener"><i class="fas fa-leaf"></i>geeksforgeeks</a></li>
+                    <li><a href="https://devfolio.co/@ShivanshOF" target="_blank" rel="noopener"><i class="fas fa-laptop-code"></i>devfolio</a></li>
+                    <li><a href="https://letsupgrade.in/user/sh1vanshgg" target="_blank" rel="noopener"><i class="fas fa-arrow-up"></i>letsupgrade</a></li>
+                    <li><a href="https://linktr.ee/ShivanshPratapSingh" target="_blank" rel="noopener"><i class="fas fa-tree"></i>linktree</a></li>
                 </ul>
             </div>
-            <div>
-                <p class="clabel">elsewhere</p>
-                <ul class="link-list">
-                    <li><a href="https://letterboxd.com/ShivanshSingh" target="_blank" rel="noopener">letterboxd</a></li>
-                    <li><a href="https://shiiiivanshsingh.github.io/intro/" target="_blank" rel="noopener">portfolio site</a></li>
-                    <li><a href="https://rebrand.ly/sh1vansh" target="_blank" rel="noopener">secret link</a></li>
-                </ul>
-            </div>
+
         </div>
     </section>
 
     <footer>
-        <p>made with <i class="fa-solid fa-heart" id="heart-icon"></i> by shivansh
-            <span id="counter-wrap" style="display:none">
-                &nbsp;— <span id="heart-count">0</span> <i class="fa-solid fa-heart"></i> given
-            </span>
+        <p>made with
+            <button id="heart-btn" aria-label="Send love">
+                <i class="fa-solid fa-heart" id="heart-icon"></i>
+            </button>
+            by shivansh
         </p>
+        <a href="https://open.spotify.com/user/a8al1zw8j5yx7z9t5izqd2ctf?si=9a220c306c4b433e"
+           id="spotify-reveal"
+           target="_blank" rel="noopener"
+           style="display:none;">
+            <i class="fab fa-spotify"></i> find me on spotify ↗
+        </a>
     </footer>
 
     <div id="popup" class="popup">thanks for visiting!</div>
@@ -468,9 +799,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme
     const themeBtn  = document.getElementById('theme-btn');
     const themeIcon = document.getElementById('theme-icon');
+    // light = terracotta accent, dark = blue accent
+    const graphColors = { light: 'D6536D', dark: '75a5fe' };
     const apply = t => {
         document.documentElement.setAttribute('data-theme', t);
         themeIcon.innerHTML = t === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        const graph = document.getElementById('gh-graph');
+        if (graph) graph.src = `https://ghchart.rshah.org/${graphColors[t]}/ShiiiivanshSingh`;
     };
     apply(localStorage.getItem('theme') || 'dark');
     themeBtn.addEventListener('click', () => {
@@ -514,7 +849,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tick(); setInterval(tick, 50);
     }
 
-    // Letterboxd last watched — rss2json.com has full CORS headers, works from any origin
+    // Letterboxd last watched
     const lbTitle = document.getElementById('lb-title');
     fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fletterboxd.com%2FShivanshSingh%2Frss%2F&api_key=&count=10')
         .then(r => r.json())
@@ -528,14 +863,21 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(() => {});
 
     // Heart / popup
+    const heartBtn   = document.getElementById('heart-btn');
     const heartIcon  = document.getElementById('heart-icon');
     const popup      = document.getElementById('popup');
-    const countEl    = document.getElementById('heart-count');
-    const wrapEl     = document.getElementById('counter-wrap');
+    const spotifyReveal = document.getElementById('spotify-reveal');
     let count = 0, timer = null;
 
-    heartIcon.addEventListener('click', () => {
-        count++; countEl.textContent = count; wrapEl.style.display = 'inline';
+    heartBtn.addEventListener('click', () => {
+        count++;
+
+        // Beat animation
+        heartBtn.classList.remove('beat');
+        void heartBtn.offsetWidth; // reflow to restart
+        heartBtn.classList.add('beat');
+
+        // Flying hearts
         for (let i = 0; i < 8; i++) {
             const h = document.createElement('i');
             h.className = 'fa-solid fa-heart heart';
@@ -543,9 +885,51 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(h);
             h.addEventListener('animationend', () => h.remove());
         }
+
+        // Popup
         popup.classList.remove('hide'); popup.classList.add('show');
         clearTimeout(timer);
         timer = setTimeout(() => { popup.classList.remove('show'); popup.classList.add('hide'); }, 1500);
+
+        // Reveal spotify on first press
+        if (count === 1) {
+            spotifyReveal.style.display = 'flex';
+        }
+    });
+
+    // ── Hamburger menu ─────────────────────────────────────────
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+
+    hamburger.addEventListener('click', () => {
+        const isOpen = mobileNav.classList.toggle('open');
+        hamburger.classList.toggle('open', isOpen);
+        hamburger.setAttribute('aria-expanded', isOpen);
+        mobileNav.setAttribute('aria-hidden', !isOpen);
+    });
+
+    // Close mobile nav when a link is clicked
+    mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileNav.classList.remove('open');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', false);
+            mobileNav.setAttribute('aria-hidden', true);
+        });
+    });
+
+    // ── Easter egg (close on Escape) ───────────────────────────
+    const easterEgg = document.getElementById('easter-egg');
+    const eggClose  = document.getElementById('egg-close');
+    eggClose.addEventListener('click', () => {
+        easterEgg.classList.remove('open');
+        document.body.style.overflow = '';
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && easterEgg.classList.contains('open')) {
+            easterEgg.classList.remove('open');
+            document.body.style.overflow = '';
+        }
     });
 
     // Service worker
