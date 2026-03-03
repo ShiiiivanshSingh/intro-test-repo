@@ -415,6 +415,97 @@ ul.cards li > a.gh:hover {
 .spotify-link .sp-label { font-size: .75rem; opacity: .6; margin-left: auto; font-style: italic; }
 
 
+
+/* ── Songs / Stats / Films / Whoami overlays ─────────────────── */
+.info-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.75);
+    z-index: 26000;
+    align-items: center; justify-content: center;
+}
+.info-overlay.open { display: flex; }
+.info-box {
+    background: var(--bg);
+    border: 1px solid var(--muted);
+    padding: 1.5rem;
+    max-width: 46ch; width: 90%;
+    max-height: 80vh; overflow-y: auto;
+    font-family: var(--font);
+}
+.info-box h3 {
+    font-size: .65rem; text-transform: uppercase;
+    letter-spacing: .14em; opacity: .4;
+    margin-bottom: 1rem; font-weight: normal;
+}
+.info-row {
+    display: flex; justify-content: space-between;
+    padding: .32rem 0; border-bottom: 1px solid var(--muted);
+    font-size: .78rem; gap: 1rem;
+}
+.info-row:last-of-type { border-bottom: none; }
+.info-key { color: var(--accent); flex-shrink: 0; }
+.info-val { opacity: .6; text-align: right; font-size: .72rem; }
+.info-close {
+    margin-top: 1rem; width: 100%;
+    background: none; border: 1px solid var(--muted);
+    color: var(--text); font-family: var(--font);
+    font-size: .75rem; padding: .35rem;
+    transition: border-color var(--ease), color var(--ease);
+}
+.info-close:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── 404 overlay ─────────────────────────────────────────────── */
+#overlay-404 {
+    display: none; position: fixed; inset: 0;
+    background: var(--bg); z-index: 27000;
+    align-items: center; justify-content: center;
+    flex-direction: column; text-align: center;
+    font-family: var(--font);
+}
+#overlay-404.open { display: flex; }
+#overlay-404 .err-code {
+    font-size: 5rem; font-weight: 700;
+    opacity: .08; line-height: 1;
+}
+#overlay-404 .err-msg {
+    font-size: .85rem; opacity: .5; margin-top: .5rem;
+}
+
+/* ── Sleep overlay ───────────────────────────────────────────── */
+#sleep-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.9); z-index: 27000;
+    align-items: center; justify-content: center;
+    font-size: 3rem;
+}
+#sleep-overlay.open { display: flex; }
+
+/* ── Glitch effect ───────────────────────────────────────────── */
+body.glitching main {
+    animation: glitch .08s steps(1) 8;
+}
+@keyframes glitch {
+    0%   { transform: translate(0); filter: none; }
+    20%  { transform: translate(-3px, 1px); filter: hue-rotate(90deg); }
+    40%  { transform: translate(3px, -1px); filter: invert(.3); }
+    60%  { transform: translate(-2px, 2px); filter: hue-rotate(180deg); }
+    80%  { transform: translate(2px, -2px); filter: none; }
+    100% { transform: translate(0); filter: none; }
+}
+
+/* ── Rage shake ──────────────────────────────────────────────── */
+body.raging {
+    animation: rage .05s steps(1) 20;
+}
+@keyframes rage {
+    0%   { transform: translate(0); }
+    25%  { transform: translate(-5px, 3px); }
+    50%  { transform: translate(5px, -3px); }
+    75%  { transform: translate(-3px, -5px); }
+    100% { transform: translate(0); }
+}
+
 /* ── Now / Recently shelves ──────────────────────────────────── */
 .shelf-grid {
     display: grid;
@@ -743,25 +834,7 @@ footer p { display: flex; align-items: center; gap: .4rem; }
 }
 @keyframes fIn { to { opacity: 1; } }
 
-/* ── Popup ───────────────────────────────────────────────────── */
-.popup {
-    display: none; position: fixed;
-    bottom: 5rem; left: 50%; transform: translateX(-50%);
-    background: var(--bg); color: var(--text);
-    border: 1px solid var(--muted);
-    padding: .5rem 1rem; font-size: .8rem;
-    z-index: 16985; opacity: 0; white-space: nowrap;
-}
-.popup.show { display: block; animation: pIn .5s forwards; }
-.popup.hide { animation: pOut .5s forwards; }
-@keyframes pIn {
-    from { opacity:0; transform: translateX(-50%) translateY(8px); }
-    to   { opacity:1; transform: translateX(-50%) translateY(0); }
-}
-@keyframes pOut {
-    from { opacity:1; transform: translateX(-50%) translateY(0); }
-    to   { opacity:0; transform: translateX(-50%) translateY(8px); }
-}
+
 
 /* ── Easter egg overlay ──────────────────────────────────────── */
 #easter-egg {
@@ -1082,6 +1155,52 @@ footer p { display: flex; align-items: center; gap: .4rem; }
 
 
 
+
+    <!-- Songs overlay -->
+    <div class="info-overlay" id="overlay-songs">
+        <div class="info-box">
+            <h3>// last 10 tracks</h3>
+            <div id="songs-list"><div class="info-row"><span class="info-key">loading...</span></div></div>
+            <button class="info-close" onclick="document.getElementById('overlay-songs').classList.remove('open')">← close</button>
+        </div>
+    </div>
+
+    <!-- Stats overlay -->
+    <div class="info-overlay" id="overlay-stats">
+        <div class="info-box">
+            <h3>// last.fm stats</h3>
+            <div id="stats-list"><div class="info-row"><span class="info-key">loading...</span></div></div>
+            <button class="info-close" onclick="document.getElementById('overlay-stats').classList.remove('open')">← close</button>
+        </div>
+    </div>
+
+    <!-- Films overlay -->
+    <div class="info-overlay" id="overlay-films">
+        <div class="info-box">
+            <h3>// top films</h3>
+            <div id="films-list"></div>
+            <button class="info-close" onclick="document.getElementById('overlay-films').classList.remove('open')">← close</button>
+        </div>
+    </div>
+
+    <!-- Whoami overlay -->
+    <div class="info-overlay" id="overlay-whoami">
+        <div class="info-box">
+            <h3>// dossier</h3>
+            <div id="whoami-list"></div>
+            <button class="info-close" onclick="document.getElementById('overlay-whoami').classList.remove('open')">← close</button>
+        </div>
+    </div>
+
+    <!-- 404 overlay -->
+    <div id="overlay-404">
+        <div class="err-code">404</div>
+        <div class="err-msg">page not found.<br><span style="opacity:.4;font-size:.7rem">just kidding.</span></div>
+    </div>
+
+    <!-- Sleep overlay -->
+    <div id="sleep-overlay">😴</div>
+
     <!-- Hint confirm dialog -->
     <div id="hint-confirm">
         <div id="hint-confirm-box">
@@ -1107,6 +1226,16 @@ footer p { display: flex; align-items: center; gap: .4rem; }
             <div class="cmd-row"><span class="cmd-key">debug</span><span class="cmd-desc">run diagnostics</span></div>
             <div class="cmd-row"><span class="cmd-key">void</span><span class="cmd-desc">stare into the abyss</span></div>
             <div class="cmd-row"><span class="cmd-key">hint</span><span class="cmd-desc">you already know</span></div>
+            <div class="cmd-row"><span class="cmd-key">songs</span><span class="cmd-desc">last 10 scrobbles</span></div>
+            <div class="cmd-row"><span class="cmd-key">stats</span><span class="cmd-desc">last.fm listening stats</span></div>
+            <div class="cmd-row"><span class="cmd-key">films</span><span class="cmd-desc">top 6 films</span></div>
+            <div class="cmd-row"><span class="cmd-key">whoami</span><span class="cmd-desc">classified dossier</span></div>
+            <div class="cmd-row"><span class="cmd-key">404</span><span class="cmd-desc">uh oh</span></div>
+            <div class="cmd-row"><span class="cmd-key">sleep</span><span class="cmd-desc">zzzz</span></div>
+            <div class="cmd-row"><span class="cmd-key">glitch</span><span class="cmd-desc">reality.exe has stopped</span></div>
+            <div class="cmd-row"><span class="cmd-key">invert</span><span class="cmd-desc">mirror world (3s)</span></div>
+            <div class="cmd-row"><span class="cmd-key">rage</span><span class="cmd-desc">AAAAAA</span></div>
+            <div class="cmd-row"><span class="cmd-key">sudo</span><span class="cmd-desc">nice try</span></div>
             <button id="commands-close">← close</button>
         </div>
     </div>
@@ -1147,7 +1276,6 @@ footer p { display: flex; align-items: center; gap: .4rem; }
         </div>
     </div>
 
-    <div id="popup" class="popup">thanks for visiting!</div>
 
 </main>
 
@@ -1254,9 +1382,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Heart / popup
     const heartBtn   = document.getElementById('heart-btn');
     const heartIcon  = document.getElementById('heart-icon');
-    const popup      = document.getElementById('popup');
     const spotifyReveal = document.getElementById('spotify-reveal');
-    let count = 0, timer = null;
+    let count = 0;
 
     heartBtn.addEventListener('click', () => {
         count++;
@@ -1278,10 +1405,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Popup
-        popup.classList.remove('hide'); popup.classList.add('show');
-        clearTimeout(timer);
-        timer = setTimeout(() => { popup.classList.remove('show'); popup.classList.add('hide'); }, 1500);
 
         // Reveal spotify on first press
         if (count === 1) {
@@ -1427,6 +1550,151 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => v.classList.remove('open'), 3000);
     };
 
+
+    // songs — last 10 tracks
+    const showSongs = () => {
+        const el = document.getElementById('overlay-songs');
+        el.classList.add('open');
+        fetch('https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=sh1vanshs2ngh&api_key=0827762c08a7c993f5249162a5805cf1&format=json&limit=10')
+            .then(r => r.json())
+            .then(d => {
+                const tracks = d?.recenttracks?.track;
+                if (!tracks?.length) throw new Error();
+                document.getElementById('songs-list').innerHTML = tracks.slice(0,10).map((t,i) => {
+                    const isNow = t['@attr']?.nowplaying === 'true';
+                    return `<div class="info-row">
+                        <span class="info-key">${isNow ? '▶' : (i+1+'.')} ${t.name}</span>
+                        <span class="info-val">${t.artist['#text']}</span>
+                    </div>`;
+                }).join('');
+            })
+            .catch(() => { document.getElementById('songs-list').innerHTML = '<div class="info-row"><span class="info-key">unavailable</span></div>'; });
+    };
+
+    // stats — last.fm user info
+    const showStats = () => {
+        const el = document.getElementById('overlay-stats');
+        el.classList.add('open');
+        fetch('https://ws.audioscrobbler.com/2.0/?method=user.getinfo&user=sh1vanshs2ngh&api_key=0827762c08a7c993f5249162a5805cf1&format=json')
+            .then(r => r.json())
+            .then(d => {
+                const u = d?.user;
+                if (!u) throw new Error();
+                fetch('https://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=sh1vanshs2ngh&api_key=0827762c08a7c993f5249162a5805cf1&format=json&limit=3&period=overall')
+                    .then(r2 => r2.json())
+                    .then(d2 => {
+                        const top = d2?.topartists?.artist?.map(a => a.name).join(', ') || '—';
+                        document.getElementById('stats-list').innerHTML = `
+                            <div class="info-row"><span class="info-key">scrobbles</span><span class="info-val">${parseInt(u.playcount).toLocaleString()}</span></div>
+                            <div class="info-row"><span class="info-key">artists</span><span class="info-val">${parseInt(u.artist_count||0).toLocaleString()}</span></div>
+                            <div class="info-row"><span class="info-key">tracks</span><span class="info-val">${parseInt(u.track_count||0).toLocaleString()}</span></div>
+                            <div class="info-row"><span class="info-key">top artists</span><span class="info-val">${top}</span></div>
+                            <div class="info-row"><span class="info-key">member since</span><span class="info-val">${new Date(u.registered['#text']*1000).getFullYear()}</span></div>
+                        `;
+                    });
+            })
+            .catch(() => { document.getElementById('stats-list').innerHTML = '<div class="info-row"><span class="info-key">unavailable</span></div>'; });
+    };
+
+    // films
+    const showFilms = () => {
+        const el = document.getElementById('overlay-films');
+        el.classList.add('open');
+        const films = [
+            { title: "my night at maud's", year: '1969' },
+            { title: 'adventures in babysitting', year: '1987' },
+            { title: 'the apartment', year: '1960' },
+            { title: 'a girl walks home alone at night', year: '2014' },
+            { title: 'groundhog day', year: '1993' },
+            { title: 'magnolia', year: '1999' },
+        ];
+        document.getElementById('films-list').innerHTML = films.map((f,i) =>
+            `<div class="info-row"><span class="info-key">${i+1}. ${f.title}</span><span class="info-val">${f.year}</span></div>`
+        ).join('');
+    };
+
+    // whoami
+    const showWhoami = () => {
+        const el = document.getElementById('overlay-whoami');
+        el.classList.add('open');
+        const birth = new Date('2005-07-08');
+        const age = ((Date.now() - birth) / (1000*60*60*24*365.2425)).toFixed(2);
+        document.getElementById('whoami-list').innerHTML = `
+            <div class="info-row"><span class="info-key">name</span><span class="info-val">Shivansh Pratap Singh</span></div>
+            <div class="info-row"><span class="info-key">age</span><span class="info-val">${age} years</span></div>
+            <div class="info-row"><span class="info-key">status</span><span class="info-val">3rd year CS student</span></div>
+            <div class="info-row"><span class="info-key">focus</span><span class="info-val">backend + DSA + open source</span></div>
+            <div class="info-row"><span class="info-key">github</span><span class="info-val">ShiiiivanshSingh</span></div>
+            <div class="info-row"><span class="info-key">last.fm</span><span class="info-val">sh1vanshs2ngh</span></div>
+            <div class="info-row"><span class="info-key">letterboxd</span><span class="info-val">ShivanshSingh</span></div>
+            <div class="info-row"><span class="info-key">vibe</span><span class="info-val">terminal aesthetic, lo-fi, film noir</span></div>
+        `;
+    };
+
+    // 404
+    const show404 = () => {
+        const el = document.getElementById('overlay-404');
+        el.classList.add('open');
+        setTimeout(() => el.classList.remove('open'), 3000);
+    };
+
+    // sleep
+    const showSleep = () => {
+        const el = document.getElementById('sleep-overlay');
+        el.classList.add('open');
+        setTimeout(() => el.classList.remove('open'), 3000);
+    };
+
+    // glitch
+    const showGlitch = () => {
+        document.body.classList.add('glitching');
+        setTimeout(() => document.body.classList.remove('glitching'), 700);
+    };
+
+    // invert
+    const showInvert = () => {
+        document.documentElement.style.filter = 'invert(1) hue-rotate(180deg)';
+        setTimeout(() => document.documentElement.style.filter = '', 3000);
+    };
+
+    // rage
+    const showRage = () => {
+        document.body.classList.add('raging');
+        setTimeout(() => document.body.classList.remove('raging'), 1000);
+    };
+
+    // sudo
+    const showSudo = () => showDebug();  // reuse debug but override lines
+    const realShowSudo = () => {
+        const term = document.getElementById('debug-terminal');
+        const out  = document.getElementById('debug-output');
+        term.classList.add('open');
+        out.innerHTML = '';
+        const lines = [
+            '$ sudo rm -rf /',
+            '> checking permissions...',
+            '> [sudo] password for visitor: ',
+            '> Sorry, try again.',
+            '> [sudo] password for visitor: ',
+            '> Sorry, try again.',
+            '> [sudo] password for visitor: ',
+            '> sudo: 3 incorrect password attempts',
+            '> nice try. permission denied.',
+            '> _',
+        ];
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i >= lines.length) { clearInterval(interval); return; }
+            out.innerHTML += lines[i] + '<br>';
+            i++;
+        }, 280);
+        document.getElementById('debug-exit').onclick = () => {
+            clearInterval(interval);
+            term.classList.remove('open');
+            out.innerHTML = '';
+        };
+    };
+
     const secrets = {
         'chungus':  () => window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank'),
         'shivansh': () => showLove(),
@@ -1438,6 +1706,16 @@ document.addEventListener('DOMContentLoaded', () => {
         'debug':    () => showDebug(),
         'void':     () => showVoid(),
         'hint':     () => showHintConfirm(),
+        'songs':    () => showSongs(),
+        'stats':    () => showStats(),
+        'films':    () => showFilms(),
+        'whoami':   () => showWhoami(),
+        '404':      () => show404(),
+        'sleep':    () => showSleep(),
+        'glitch':   () => showGlitch(),
+        'invert':   () => showInvert(),
+        'rage':     () => showRage(),
+        'sudo':     () => realShowSudo(),
     };
 
     const tryPassword = () => {
@@ -1471,7 +1749,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const tracks = d?.recenttracks?.track;
             if (!tracks?.length) throw new Error();
             const shelf = document.getElementById('lfm-shelf');
-            shelf.innerHTML = tracks.slice(0, 5).map(t => {
+            shelf.innerHTML = tracks.slice(0, 6).map(t => {
                 const isNow = t['@attr']?.nowplaying === 'true';
                 return `<li>
                     <span class="shelf-track">${t.name}${isNow ? '<span class="shelf-now">▶ now</span>' : ''}</span>
