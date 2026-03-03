@@ -670,7 +670,7 @@ footer p { display: flex; align-items: center; gap: .4rem; }
         </p>
         <p class="status-line">
             <span class="sdot" style="background:#1DB954"></span>
-            last listened:&nbsp;<span id="lfm-title">—</span>&nbsp;<span id="lfm-artist" style="opacity:.6"></span>
+            <span id="lfm-label">last listened</span>:&nbsp;<span id="lfm-title">—</span>&nbsp;<span id="lfm-artist" style="opacity:.6"></span>
         </p>
     </section>
 
@@ -795,7 +795,7 @@ footer p { display: flex; align-items: center; gap: .4rem; }
                 <ul class="shelf-list" id="lfm-shelf"><li style="opacity:.35;padding:.35rem 0 .35rem var(--sp)">loading...</li></ul>
             </div>
             <div class="shelf">
-                <p class="shelf-label">recently watched</p>
+                <p class="shelf-label">top films</p>
                 <ul class="shelf-list" id="lb-shelf"><li style="opacity:.35;padding:.35rem 0 .35rem var(--sp)">loading...</li></ul>
             </div>
         </div>
@@ -911,12 +911,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Letterboxd last watched
     const lbTitle = document.getElementById('lb-title');
-    fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fletterboxd.com%2FShivanshSingh%2Frss%2F&api_key=&count=10')
+    fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://letterboxd.com/ShivanshSingh/rss/')}`)
         .then(r => r.json())
         .then(d => {
-            if (d.status !== 'ok' || !d.items?.length) throw new Error();
-            for (const item of d.items) {
-                const m = (item.title || '').match(/^(.+?),\s*\d{4}/);
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(d.contents, 'text/xml');
+            const items = [...xml.querySelectorAll('item')];
+            for (const item of items) {
+                const title = item.querySelector('title')?.textContent || '';
+                const m = title.match(/^(.+?),\s*\d{4}/);
                 if (m) { lbTitle.textContent = m[1].trim(); return; }
             }
         })
@@ -933,10 +936,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const isNow = track['@attr']?.nowplaying === 'true';
             lfmTitle.textContent  = track.name;
             lfmArtist.textContent = '— ' + track.artist['#text'];
-            // swap dot to pulsing green if currently playing
+            const lfmLabel = document.getElementById('lfm-label');
             if (isNow) {
+                if (lfmLabel) lfmLabel.textContent = 'now listening';
                 const dot = lfmTitle.closest('.status-line').querySelector('.sdot');
                 if (dot) dot.style.animation = 'pulse 1s ease-in-out infinite';
+            } else {
+                if (lfmLabel) lfmLabel.textContent = 'last played';
             }
         })
         .catch(() => {});
@@ -984,7 +990,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const tracks = d?.recenttracks?.track;
             if (!tracks?.length) throw new Error();
             const shelf = document.getElementById('lfm-shelf');
-            shelf.innerHTML = tracks.slice(0, 5).map(t => {
+            shelf.innerHTML = tracks.slice(0, 6).map(t => {
                 const isNow = t['@attr']?.nowplaying === 'true';
                 return `<li>
                     <span class="shelf-track">${t.name}${isNow ? '<span class="shelf-now">▶ now</span>' : ''}</span>
@@ -996,27 +1002,18 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('lfm-shelf').innerHTML = '<li style="opacity:.35">unavailable</li>';
         });
 
-    // ── Letterboxd shelf (last 4 films) ───────────────────────
-    fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fletterboxd.com%2FShivanshSingh%2Frss%2F&api_key=&count=4')
-        .then(r => r.json())
-        .then(d => {
-            if (d.status !== 'ok' || !d.items?.length) throw new Error();
-            const shelf = document.getElementById('lb-shelf');
-            const films = [];
-            for (const item of d.items) {
-                const m = (item.title || '').match(/^(.+?),\s*(\d{4})/);
-                if (m) films.push({ title: m[1].trim(), year: m[2] });
-                if (films.length === 4) break;
-            }
-            if (!films.length) throw new Error();
-            shelf.innerHTML = films.map(f => `<li>
-                <span class="shelf-film">${f.title}</span>
-                <span class="shelf-sub">${f.year}</span>
-            </li>`).join('');
-        })
-        .catch(() => {
-            document.getElementById('lb-shelf').innerHTML = '<li style="opacity:.35">unavailable</li>';
-        });
+    // ── Top films (hardcoded) ─────────────────────────────────
+    document.getElementById('lb-shelf').innerHTML = [
+        { title: "my night at maud's", year: '1969' },
+        { title: 'adventures in babysitting', year: '1987' },
+        { title: 'the apartment', year: '1960' },
+        { title: 'a girl walks home alone at night', year: '2014' },
+        { title: 'groundhog day', year: '1993' },
+        { title: 'magnolia', year: '1999' },
+    ].map(f => `<li>
+        <span class="shelf-film">${f.title}</span>
+        <span class="shelf-sub">${f.year}</span>
+    </li>`).join('');
 
     // ── Hamburger menu ─────────────────────────────────────────
     const hamburger = document.getElementById('hamburger');
