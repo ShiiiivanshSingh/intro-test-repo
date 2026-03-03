@@ -500,25 +500,19 @@ document.addEventListener('DOMContentLoaded', () => {
         tick(); setInterval(tick, 50);
     }
 
-    // Visitor counter — use a simple image-based badge and parse the SVG count
-    // hits.sh JSON is CORS-blocked but their SVG works fine; we parse count from it
+    // Visitor counter — pageview.lol (built for static/GitHub Pages sites, full CORS)
     const visEl = document.getElementById('visitor-el');
-    fetch('https://hits.sh/shiiiivanshsingh.github.io/intro-test-repo.svg')
-        .then(r => r.text())
-        .then(svg => {
-            // The SVG contains the count as a text node, e.g. ">123<"
-            const m = svg.match(/<text[^>]*>(\d+)<\/text>/g);
-            if (m) {
-                // Last match is usually the count (first is the label "hits")
-                const nums = m.map(t => t.replace(/<[^>]+>/g, '')).filter(t => /^\d+$/.test(t));
-                if (nums.length) { visEl.textContent = Number(nums[nums.length-1]).toLocaleString() + ' visitors'; return; }
-            }
-            throw new Error();
+    fetch('https://api.pageview.lol/hit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: 'shiiiivanshsingh-intro' })
+    })
+        .then(r => r.json())
+        .then(d => {
+            const n = d.count ?? d.total ?? d.hits;
+            if (n != null) visEl.textContent = Number(n).toLocaleString() + ' visitors';
         })
-        .catch(() => {
-            // Fallback: use a simple incrementing counter via jsonbin.io or just show static
-            visEl.textContent = 'visitors';
-        });
+        .catch(() => {});
 
     // Letterboxd last watched — rss2json.com has full CORS headers, works from any origin
     const lbTitle = document.getElementById('lb-title');
@@ -559,8 +553,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js').catch(()=>{}));
 });
 </script>
-
-<img src="https://hits.sh/shiiiivanshsingh.github.io/intro-test-repo.svg" style="display:none" alt="" aria-hidden="true">
 
 <script type="application/ld+json">
 {"@context":"http://schema.org","@type":"Person","name":"Shivansh Pratap Singh","url":"https://shiiiivanshsingh.github.io/intro/","jobTitle":"Computer Science Student"}
