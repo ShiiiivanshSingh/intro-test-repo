@@ -500,30 +500,68 @@ document.addEventListener('DOMContentLoaded', () => {
         tick(); setInterval(tick, 50);
     }
 
-    // Visitor counter — counterapi.dev (free, no signup)
+    // Visitor counter — api.counterapi.dev
+    // Tries two proxies in sequence for reliability
     const visEl = document.getElementById('visitor-el');
-    fetch('https://api.counterapi.dev/v1/shivansh-works/visits/up')
-        .then(r => r.json())
-        .then(d => { if (d.count != null) visEl.textContent = Number(d.count).toLocaleString() + ' visitors'; })
-        .catch(() => { visEl.textContent = 'visitors'; });
+    const countApis = [
+        'https://api.counterapi.dev/v1/shivansh-works/visits/up',
+        'https://counterapi.com/api/shivansh-works/visits/up'
+    ];
+    (async () => {
+        for (const url of countApis) {
+            try {
+                const r = await fetch(url);
+                const d = await r.json();
+                const n = d.count ?? d.value ?? d.hits;
+                if (n != null) { visEl.textContent = Number(n).toLocaleString() + ' visitors'; return; }
+            } catch(e) {}
+        }
+    })();
 
-    // Letterboxd last watched — public RSS via allorigins proxy
-    fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://letterboxd.com/ShivanshSingh/rss/'))
+    // Letterboxd last watched — tries rss2json first, then allorigins fallback
+    const lbTitle = document.getElementById('lb-title');
+    const lbLink  = document.getElementById('lb-link');
+    const lbRss   = 'https://letterboxd.com/ShivanshSingh/rss/';
+
+    const parseFilm = xml => {
+        for (const item of xml.querySelectorAll('item')) {
+            const t = item.querySelector('title')?.textContent || '';
+            const m = t.match(/^(.+),\s*\d{4}/);
+            if (m) {
+                lbTitle.textContent = m[1].trim();
+                const url = item.querySelector('link')?.textContent?.trim();
+                if (url) lbLink.href = url;
+                return true;
+            }
+        }
+        return false;
+    };
+
+    // Try rss2json (returns JSON — no CORS issues)
+    fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(lbRss))
         .then(r => r.json())
         .then(d => {
-            const xml   = new DOMParser().parseFromString(d.contents, 'text/xml');
-            for (const item of xml.querySelectorAll('item')) {
-                const t = item.querySelector('title')?.textContent || '';
-                const m = t.match(/^(.+),\s*\d{4}/);
+            if (!d.items) throw new Error('no items');
+            for (const item of d.items) {
+                const m = item.title?.match(/^(.+),\s*\d{4}/);
                 if (m) {
-                    document.getElementById('lb-title').textContent = m[1].trim();
-                    const url = item.querySelector('link')?.textContent?.trim();
-                    if (url) document.getElementById('lb-link').href = url;
+                    lbTitle.textContent = m[1].trim();
+                    if (item.link) lbLink.href = item.link;
                     return;
                 }
             }
+            throw new Error('no match');
         })
-        .catch(() => {});
+        .catch(() => {
+            // Fallback: allorigins proxy
+            fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(lbRss))
+                .then(r => r.json())
+                .then(d => {
+                    const xml = new DOMParser().parseFromString(d.contents, 'text/xml');
+                    parseFilm(xml);
+                })
+                .catch(() => {});
+        });
 
     // Heart / popup
     const heartIcon  = document.getElementById('heart-icon');
