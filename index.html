@@ -346,8 +346,6 @@ footer i:hover { color: var(--text); transform: scale(1.2); }
         <p>i'm currently <span id="age">calculating...</span> years old</p>
         <p class="status-line">
             <span class="sdot"></span>
-            <span id="visitor-el">visitors</span>
-            &nbsp;·&nbsp;
             last watched:&nbsp;<span id="lb-title">—</span>
         </p>
     </section>
@@ -499,20 +497,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const tick  = () => ageEl.textContent = ((Date.now() - birth) / (1000*60*60*24*365.2425)).toFixed(9);
         tick(); setInterval(tick, 50);
     }
-
-    // Visitor counter — pageview.lol (built for static/GitHub Pages sites, full CORS)
-    const visEl = document.getElementById('visitor-el');
-    fetch('https://api.pageview.lol/hit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: 'shiiiivanshsingh-intro' })
-    })
-        .then(r => r.json())
-        .then(d => {
-            const n = d.count ?? d.total ?? d.hits;
-            if (n != null) visEl.textContent = Number(n).toLocaleString() + ' visitors';
-        })
-        .catch(() => {});
 
     // Letterboxd last watched — rss2json.com has full CORS headers, works from any origin
     const lbTitle = document.getElementById('lb-title');
