@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shivansh's Works</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <meta property="og:title" content="Shivansh's Works - Portfolio">
     <meta property="og:description" content="Portfolio of Shivansh Pratap Singh - CS Student and Developer">
@@ -911,19 +912,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Letterboxd last watched
     const lbTitle = document.getElementById('lb-title');
-    fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://letterboxd.com/ShivanshSingh/rss/')}`)
+    const lbUrl = 'https://letterboxd.com/ShivanshSingh/rss/';
+    const parseLbXml = (text) => {
+        const xml = new DOMParser().parseFromString(text, 'text/xml');
+        for (const item of xml.querySelectorAll('item')) {
+            const title = item.querySelector('title')?.textContent || '';
+            const m = title.match(/^(.+?),\s*\d{4}/);
+            if (m) return m[1].trim();
+        }
+        return null;
+    };
+    fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(lbUrl)}`)
         .then(r => r.json())
-        .then(d => {
-            const parser = new DOMParser();
-            const xml = parser.parseFromString(d.contents, 'text/xml');
-            const items = [...xml.querySelectorAll('item')];
-            for (const item of items) {
-                const title = item.querySelector('title')?.textContent || '';
-                const m = title.match(/^(.+?),\s*\d{4}/);
-                if (m) { lbTitle.textContent = m[1].trim(); return; }
-            }
-        })
-        .catch(() => {});
+        .then(d => { const t = parseLbXml(d.contents); if (t) lbTitle.textContent = t; else throw new Error(); })
+        .catch(() =>
+            fetch(`https://corsproxy.io/?${encodeURIComponent(lbUrl)}`)
+                .then(r => r.text())
+                .then(text => { const t = parseLbXml(text); if (t) lbTitle.textContent = t; })
+                .catch(() => {})
+        );
 
     // Last.fm last listened
     const lfmTitle  = document.getElementById('lfm-title');
@@ -990,7 +997,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const tracks = d?.recenttracks?.track;
             if (!tracks?.length) throw new Error();
             const shelf = document.getElementById('lfm-shelf');
-            shelf.innerHTML = tracks.slice(0, 6).map(t => {
+            shelf.innerHTML = tracks.slice(0, 5).map(t => {
                 const isNow = t['@attr']?.nowplaying === 'true';
                 return `<li>
                     <span class="shelf-track">${t.name}${isNow ? '<span class="shelf-now">▶ now</span>' : ''}</span>
