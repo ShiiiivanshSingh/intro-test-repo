@@ -75,24 +75,72 @@ body {
     background: var(--bg);
     border-bottom: 1px solid var(--muted);
     backdrop-filter: blur(10px);
-    margin: 0 calc(-1*var(--sp)) var(--sp);
+    /* stretch to full body width including padding */
+    margin: 0 calc(-1 * var(--sp)) var(--sp);
     padding: 0 var(--sp);
     transition: background .3s;
 }
+
 .hdr-inner {
-    display: flex; align-items: center; gap: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     padding: .55rem 0;
-}
-.hdr-title {
-    font-size: .8rem; text-transform: uppercase;
-    letter-spacing: .12em; opacity: .65; flex-shrink: 0;
+    min-width: 0;
 }
 
-/* Desktop nav */
-nav {
-    flex: 1; display: flex; flex-wrap: wrap; gap: 1rem;
-    font-size: .8rem;
+/* spacer pushes everything after it to the right */
+.hdr-spacer {
+    flex: 1;
 }
+
+.hdr-title {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    flex-shrink: 0;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+    background: linear-gradient(
+        90deg,
+        var(--text) 0%,
+        var(--text) 35%,
+        #ffffff 50%,
+        var(--text) 65%,
+        var(--text) 100%
+    );
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: none;
+}
+.hdr-title:hover {
+    animation: titleShimmer 1.5s linear infinite, titleGlow 1.8s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+    0%,100% { filter: drop-shadow(0 0 2px rgba(255,255,255,0.1)); }
+    50%      { filter: drop-shadow(0 0 8px rgba(255,255,255,0.55)); }
+}
+
+@keyframes titleShimmer {
+    0%   { background-position: 200% center; }
+    100% { background-position: -50% center; }
+}
+
+/* Desktop nav — natural width, hugs title */
+nav {
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+    font-size: .78rem;
+}
+
+/* ── Theme button — always on the far right ──────────────────── */
 nav a {
     color: var(--text); text-decoration: none;
     border: none; white-space: nowrap;
@@ -114,23 +162,22 @@ nav a:hover::after { width: 100%; }
     border: 1px solid var(--muted);
     color: var(--text);
     border-radius: 4px;
-    width: 1.7rem; height: 1.7rem;
+    width: 1.9rem; height: 1.9rem;
     align-items: center; justify-content: center;
-    font-size: .75rem;
-    transition: border-color var(--ease), color var(--ease);
     flex-direction: column;
-    gap: 3px;
-    padding: 4px;
+    gap: 4px;
+    padding: 5px;
+    transition: border-color var(--ease), color var(--ease);
 }
 #hamburger:hover { border-color: var(--accent); color: var(--accent); }
 #hamburger span {
-    display: block; width: 100%; height: 1px;
+    display: block; width: 100%; height: 1.5px;
     background: currentColor;
     transition: transform .2s, opacity .2s;
 }
-#hamburger.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+#hamburger.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
 #hamburger.open span:nth-child(2) { opacity: 0; }
-#hamburger.open span:nth-child(3) { transform: translateY(-4px) rotate(-45deg); }
+#hamburger.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
 
 /* Mobile nav drawer */
 #mobile-nav {
@@ -140,25 +187,30 @@ nav a:hover::after { width: 100%; }
     background: var(--bg);
     border-bottom: 1px solid var(--muted);
     padding: .5rem var(--sp);
-    margin: 0 calc(-1*var(--sp));
+    margin: 0 calc(-1 * var(--sp));
     transition: background .3s;
 }
 #mobile-nav.open { display: flex; }
 #mobile-nav a {
     color: var(--text); text-decoration: none;
-    font-size: .85rem; padding: .4rem 0;
+    font-size: .85rem; padding: .45rem 0;
     border-bottom: 1px solid var(--muted);
     transition: color var(--ease);
 }
 #mobile-nav a:last-child { border-bottom: none; }
 #mobile-nav a:hover { color: var(--accent); }
 
+/* ── Theme button — always last, never shrinks ────────────────── */
 #theme-btn {
-    flex-shrink: 0; background: none;
-    border: 1px solid var(--muted); color: var(--text);
-    border-radius: 50%; width: 1.7rem; height: 1.7rem;
+    flex-shrink: 0;
+    margin-left: auto;
+    background: none;
+    border: 1px solid var(--muted);
+    color: var(--text);
+    border-radius: 50%;
+    width: 1.9rem; height: 1.9rem;
     display: flex; align-items: center; justify-content: center;
-    font-size: .75rem;
+    font-size: .78rem;
     transition: border-color var(--ease), color var(--ease);
 }
 #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
@@ -593,10 +645,6 @@ footer p { display: flex; align-items: center; gap: .4rem; }
     to   { opacity: 1; transform: translateY(0); }
 }
 
-
-
-
-
 /* ── Hint confirm + commands list ───────────────────────────── */
 #hint-confirm {
     display: none;
@@ -777,6 +825,8 @@ footer p { display: flex; align-items: center; gap: .4rem; }
 }
 #pw-box p {
     font-size: .8rem; opacity: .6; margin-bottom: 1rem;
+    user-select: none;
+    -webkit-user-select: none;
 }
 #pw-input {
     width: 100%;
@@ -833,8 +883,6 @@ footer p { display: flex; align-items: center; gap: .4rem; }
     100% { transform: translateY(-40vh) scale(.4); opacity: 0; }
 }
 @keyframes fIn { to { opacity: 1; } }
-
-
 
 /* ── Easter egg overlay ──────────────────────────────────────── */
 #easter-egg {
@@ -893,8 +941,17 @@ footer p { display: flex; align-items: center; gap: .4rem; }
     nav { display: none; }
     #hamburger { display: flex; }
 
+    /* title stays left, hamburger+theme pushed to far right */
+    .hdr-title { margin-right: auto; }
+    #hamburger { margin-left: 0; }
+    #theme-btn  { margin-left: 0; }
+
     .featured-grid { grid-template-columns: 1fr; }
     .connect-grid { grid-template-columns: 1fr; gap: var(--sp); }
+
+    /* tighten header on mobile */
+    .hdr-title { font-size: .72rem; letter-spacing: .08em; }
+    .hdr-inner { gap: .6rem; }
 }
     </style>
 </head>
@@ -1151,11 +1208,6 @@ footer p { display: flex; align-items: center; gap: .4rem; }
         </a>
     </footer>
 
-
-
-
-
-
     <!-- Songs overlay -->
     <div class="info-overlay" id="overlay-songs">
         <div class="info-box">
@@ -1240,8 +1292,6 @@ footer p { display: flex; align-items: center; gap: .4rem; }
         </div>
     </div>
 
-    </div>
-
     <!-- Debug terminal -->
     <div id="debug-terminal">
         <div id="debug-output"></div>
@@ -1276,7 +1326,6 @@ footer p { display: flex; align-items: center; gap: .4rem; }
         </div>
     </div>
 
-
 </main>
 
 <script>
@@ -1285,7 +1334,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme
     const themeBtn  = document.getElementById('theme-btn');
     const themeIcon = document.getElementById('theme-icon');
-    // light = terracotta accent, dark = blue accent
     const graphColors = { light: 'D6536D', dark: '75a5fe' };
     const apply = t => {
         document.documentElement.setAttribute('data-theme', t);
@@ -1379,6 +1427,19 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(() => {});
 
+    // Title click easter egg (10 clicks → password modal)
+    const hdrTitle = document.querySelector('.hdr-title');
+    let titleCount = 0;
+    hdrTitle.style.cursor = 'pointer';
+    hdrTitle.addEventListener('click', () => {
+        titleCount++;
+        if (titleCount >= 10) {
+            titleCount = 0;
+            document.getElementById('pw-modal').classList.add('open');
+            setTimeout(() => document.getElementById('pw-input').focus(), 50);
+        }
+    });
+
     // Heart / popup
     const heartBtn   = document.getElementById('heart-btn');
     const heartIcon  = document.getElementById('heart-icon');
@@ -1387,13 +1448,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     heartBtn.addEventListener('click', () => {
         count++;
-
-        // Beat animation
         heartBtn.classList.remove('beat');
-        void heartBtn.offsetWidth; // reflow to restart
+        void heartBtn.offsetWidth;
         heartBtn.classList.add('beat');
 
-        // Flying hearts (throttled)
         const existingHearts = document.querySelectorAll('.heart').length;
         if (existingHearts < 12) {
             for (let i = 0; i < 4; i++) {
@@ -1405,12 +1463,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-
-        // Reveal spotify on first press
         if (count === 1) {
             spotifyReveal.style.display = 'flex';
         }
-        // Open password modal at every 10 clicks
         if (count % 10 === 0) {
             count = 0;
             document.getElementById('pw-modal').classList.add('open');
@@ -1418,7 +1473,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ── Password modal logic ───────────────────────────────────
+    // Password modal logic
     const pwModal  = document.getElementById('pw-modal');
     const pwInput  = document.getElementById('pw-input');
     const pwSubmit = document.getElementById('pw-submit');
@@ -1427,7 +1482,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const showLove = () => {
         const lp = document.getElementById('love-popup');
         lp.classList.add('open');
-        // spawn hearts
         for (let i = 0; i < 10; i++) {
             const h = document.createElement('i');
             h.className = 'fa-solid fa-heart heart';
@@ -1466,13 +1520,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     };
 
-    // hint confirm — yes does nothing, no opens commands
     const showHintConfirm = () => {
         const hintEl = document.getElementById('hint-confirm');
         hintEl.classList.add('open');
         document.getElementById('hint-yes').onclick = () => {
             hintEl.classList.remove('open');
-            // yes = does nothing, just closes
         };
         document.getElementById('hint-no').onclick = () => {
             hintEl.classList.remove('open');
@@ -1483,12 +1535,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('commands-list').classList.remove('open');
     });
 
-    // lo-fi player
     const showLofi = () => {
         window.open('https://www.youtube.com/watch?v=jfKfPfyJRdk', '_blank');
     };
 
-    // confetti
     const showKonami = () => {
         const colors = ['#D6536D','#75a5fe','#1DB954','#ffd700','#ff6b6b','#a29bfe'];
         for (let i = 0; i < 120; i++) {
@@ -1508,7 +1558,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // debug terminal
     const showDebug = () => {
         const term = document.getElementById('debug-terminal');
         const out  = document.getElementById('debug-output');
@@ -1543,15 +1592,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     };
 
-    // void
     const showVoid = () => {
         const v = document.getElementById('void-overlay');
         v.classList.add('open');
         setTimeout(() => v.classList.remove('open'), 3000);
     };
 
-
-    // songs — last 10 tracks
     const showSongs = () => {
         const el = document.getElementById('overlay-songs');
         el.classList.add('open');
@@ -1571,7 +1617,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(() => { document.getElementById('songs-list').innerHTML = '<div class="info-row"><span class="info-key">unavailable</span></div>'; });
     };
 
-    // stats — last.fm user info
     const showStats = () => {
         const el = document.getElementById('overlay-stats');
         el.classList.add('open');
@@ -1596,7 +1641,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(() => { document.getElementById('stats-list').innerHTML = '<div class="info-row"><span class="info-key">unavailable</span></div>'; });
     };
 
-    // films
     const showFilms = () => {
         const el = document.getElementById('overlay-films');
         el.classList.add('open');
@@ -1613,7 +1657,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ).join('');
     };
 
-    // whoami
     const showWhoami = () => {
         const el = document.getElementById('overlay-whoami');
         el.classList.add('open');
@@ -1631,40 +1674,33 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     };
 
-    // 404
     const show404 = () => {
         const el = document.getElementById('overlay-404');
         el.classList.add('open');
         setTimeout(() => el.classList.remove('open'), 3000);
     };
 
-    // sleep
     const showSleep = () => {
         const el = document.getElementById('sleep-overlay');
         el.classList.add('open');
         setTimeout(() => el.classList.remove('open'), 3000);
     };
 
-    // glitch
     const showGlitch = () => {
         document.body.classList.add('glitching');
         setTimeout(() => document.body.classList.remove('glitching'), 700);
     };
 
-    // invert
     const showInvert = () => {
         document.documentElement.style.filter = 'invert(1) hue-rotate(180deg)';
         setTimeout(() => document.documentElement.style.filter = '', 3000);
     };
 
-    // rage
     const showRage = () => {
         document.body.classList.add('raging');
         setTimeout(() => document.body.classList.remove('raging'), 1000);
     };
 
-    // sudo
-    const showSudo = () => showDebug();  // reuse debug but override lines
     const realShowSudo = () => {
         const term = document.getElementById('debug-terminal');
         const out  = document.getElementById('debug-output');
@@ -1741,8 +1777,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pwInput.value = '';
     });
 
-
-    // ── Last.fm shelf (last 5 tracks) ─────────────────────────
+    // Last.fm shelf
     fetch('https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=sh1vanshs2ngh&api_key=0827762c08a7c993f5249162a5805cf1&format=json&limit=5')
         .then(r => r.json())
         .then(d => {
@@ -1761,7 +1796,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('lfm-shelf').innerHTML = '<li style="opacity:.35">unavailable</li>';
         });
 
-    // ── Top films (hardcoded) ─────────────────────────────────
+    // Top films
     document.getElementById('lb-shelf').innerHTML = [
         { title: "my night at maud's", year: '1969' },
         { title: 'adventures in babysitting', year: '1987' },
@@ -1774,7 +1809,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="shelf-sub">${f.year}</span>
     </li>`).join('');
 
-    // ── Hamburger menu ─────────────────────────────────────────
+    // Hamburger menu
     const hamburger = document.getElementById('hamburger');
     const mobileNav = document.getElementById('mobile-nav');
 
@@ -1785,7 +1820,6 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileNav.setAttribute('aria-hidden', !isOpen);
     });
 
-    // Close mobile nav when a link is clicked
     mobileNav.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
             mobileNav.classList.remove('open');
@@ -1795,7 +1829,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ── Easter egg (close on Escape) ───────────────────────────
+    // Easter egg
     const easterEgg = document.getElementById('easter-egg');
     const eggClose  = document.getElementById('egg-close');
     eggClose.addEventListener('click', () => {
