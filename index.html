@@ -44,14 +44,14 @@ html { scroll-behavior: smooth; }
 #cur-dot {
     position: fixed; width: 5px; height: 5px;
     background: var(--accent); border-radius: 50%;
-    pointer-events: none; z-index: 8999;
+    pointer-events: none; z-index: 99999;
     transform: translate(-50%,-50%);
     top: -20px; left: -20px;
 }
 #cur-ring {
     position: fixed; width: 26px; height: 26px;
     border: 1px solid var(--accent); border-radius: 50%;
-    pointer-events: none; z-index: 8998; opacity: .55;
+    pointer-events: none; z-index: 99998; opacity: .55;
     transform: translate(-50%,-50%);
     top: -20px; left: -20px;
     transition: width .15s, height .15s, opacity .15s;
@@ -502,16 +502,244 @@ footer p { display: flex; align-items: center; gap: .4rem; }
     to   { opacity: 1; transform: translateY(0); }
 }
 
+
+
+
+
+/* ── Hint confirm + commands list ───────────────────────────── */
+#hint-confirm {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.6);
+    z-index: 27500;
+    align-items: center; justify-content: center;
+}
+#hint-confirm.open { display: flex; }
+#hint-confirm-box {
+    background: var(--bg);
+    border: 1px solid var(--muted);
+    padding: 1.2rem 1.5rem;
+    font-family: var(--font);
+    font-size: .82rem;
+    max-width: 30ch;
+    text-align: center;
+}
+#hint-confirm-box p { margin-bottom: 1rem; opacity: .75; }
+.hint-confirm-btns { display: flex; gap: .75rem; justify-content: center; }
+.hint-confirm-btns button {
+    background: none; font-family: var(--font); font-size: .78rem;
+    padding: .35rem .9rem;
+    border: 1px solid var(--muted); color: var(--text);
+    transition: border-color var(--ease), color var(--ease);
+}
+.hint-confirm-btns button:hover { border-color: var(--accent); color: var(--accent); }
+
+#commands-list {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.7);
+    z-index: 27500;
+    align-items: center; justify-content: center;
+}
+#commands-list.open { display: flex; }
+#commands-box {
+    background: var(--bg);
+    border: 1px solid var(--muted);
+    padding: 1.5rem;
+    font-family: var(--font);
+    max-width: 46ch; width: 90%;
+    max-height: 80vh; overflow-y: auto;
+}
+#commands-box h3 {
+    font-size: .7rem; text-transform: uppercase;
+    letter-spacing: .14em; opacity: .42;
+    margin-bottom: 1rem; font-weight: normal;
+}
+.cmd-row {
+    display: flex; justify-content: space-between;
+    align-items: baseline;
+    padding: .35rem 0;
+    border-bottom: 1px solid var(--muted);
+    font-size: .8rem; gap: 1rem;
+}
+.cmd-row:last-of-type { border-bottom: none; }
+.cmd-key {
+    color: var(--accent); font-size: .78rem;
+    flex-shrink: 0; letter-spacing: .05em;
+}
+.cmd-desc { opacity: .6; font-size: .75rem; text-align: right; }
+#commands-close {
+    margin-top: 1rem; width: 100%;
+    background: none; border: 1px solid var(--muted);
+    color: var(--text); font-family: var(--font);
+    font-size: .75rem; padding: .35rem;
+    transition: border-color var(--ease), color var(--ease);
+}
+#commands-close:hover { border-color: var(--accent); color: var(--accent); }
+
+
+/* ── Confetti ─────────────────────────────────────────────────── */
+.confetti-piece {
+    position: fixed; top: -10px;
+    width: 8px; height: 8px;
+    pointer-events: none; z-index: 26000;
+    animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* ── Debug terminal ──────────────────────────────────────────── */
+#debug-terminal {
+    display: none;
+    position: fixed; inset: 0;
+    background: #0a0a0a;
+    z-index: 26000;
+    padding: 2rem;
+    font-family: monospace; font-size: .78rem;
+    color: #33ff33;
+    overflow: hidden;
+}
+#debug-terminal.open { display: block; }
+#debug-output { line-height: 1.8; }
+#debug-terminal .debug-exit {
+    position: absolute; bottom: 1.5rem; right: 1.5rem;
+    background: none; border: 1px solid #33ff33;
+    color: #33ff33; font-family: monospace;
+    font-size: .7rem; padding: .3rem .7rem;
+    opacity: .5; transition: opacity var(--ease);
+}
+#debug-terminal .debug-exit:hover { opacity: 1; }
+
+/* ── Void ────────────────────────────────────────────────────── */
+#void-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: #000;
+    z-index: 27000;
+    align-items: center; justify-content: center;
+}
+#void-overlay.open { display: flex; }
+#void-cursor {
+    width: 2px; height: 1.2rem;
+    background: #fff;
+    animation: blink .7s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ── Secret popups ───────────────────────────────────────────── */
+#love-popup {
+    display: none;
+    position: fixed; inset: 0;
+    z-index: 26000;
+    align-items: center; justify-content: center;
+    pointer-events: none;
+}
+#love-popup.open { display: flex; }
+#love-popup .love-msg {
+    font-family: var(--font);
+    font-size: 2rem;
+    color: var(--accent);
+    animation: lovePop .6s cubic-bezier(.17,.67,.35,1.4) forwards;
+    pointer-events: none;
+}
+@keyframes lovePop {
+    0%   { opacity:0; transform: scale(.4); }
+    60%  { opacity:1; transform: scale(1.15); }
+    100% { opacity:1; transform: scale(1); }
+}
+
+/* ── Matrix overlay ──────────────────────────────────────────── */
+#matrix-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: #000;
+    z-index: 26000;
+    cursor: pointer;
+}
+#matrix-overlay.open { display: block; }
+#matrix-overlay canvas { width: 100%; height: 100%; }
+#matrix-overlay .matrix-exit {
+    position: absolute; bottom: 2rem; left: 50%;
+    transform: translateX(-50%);
+    color: #0f0; font-family: monospace; font-size: .75rem;
+    opacity: .5; letter-spacing: .1em;
+}
+
+/* ── Password modal ──────────────────────────────────────────── */
+#pw-modal {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.7);
+    z-index: 25000;
+    align-items: center; justify-content: center;
+}
+#pw-modal.open { display: flex; }
+#pw-box {
+    background: var(--bg);
+    border: 1px solid var(--muted);
+    padding: 1.5rem;
+    max-width: 32ch; width: 90%;
+    text-align: center;
+    font-family: var(--font);
+}
+#pw-box p {
+    font-size: .8rem; opacity: .6; margin-bottom: 1rem;
+}
+#pw-input {
+    width: 100%;
+    background: none;
+    border: 1px solid var(--muted);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: .85rem;
+    padding: .4rem .6rem;
+    margin-bottom: .75rem;
+    outline: none;
+    transition: border-color var(--ease);
+}
+#pw-input:focus { border-color: var(--accent); }
+#pw-input.wrong {
+    border-color: #e55;
+    animation: shake .3s ease-out;
+}
+@keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25%      { transform: translateX(-6px); }
+    75%      { transform: translateX(6px); }
+}
+#pw-submit {
+    background: none;
+    border: 1px solid var(--muted);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: .78rem;
+    padding: .35rem .9rem;
+    transition: border-color var(--ease), color var(--ease);
+}
+#pw-submit:hover { border-color: var(--accent); color: var(--accent); }
+#pw-cancel {
+    background: none; border: none;
+    color: var(--text); font-family: var(--font);
+    font-size: .7rem; opacity: .4;
+    margin-left: .6rem;
+    transition: opacity var(--ease);
+}
+#pw-cancel:hover { opacity: .8; }
+
 /* ── Flying hearts ───────────────────────────────────────────── */
 .heart {
     position: fixed; font-size: 1.4rem; color: var(--accent);
     pointer-events: none;
-    animation: fIn 10s forwards, fUp 10s ease-out forwards;
+    animation: fIn 4s forwards, fUp 4s ease-out forwards;
     opacity: 0; z-index: 8990;
+    will-change: transform, opacity;
 }
 @keyframes fUp {
     0%   { transform: translateY(0) scale(1); opacity: 1; }
-    100% { transform: translateY(-60vh) scale(.4); opacity: 0; }
+    100% { transform: translateY(-40vh) scale(.4); opacity: 0; }
 }
 @keyframes fIn { to { opacity: 1; } }
 
@@ -850,6 +1078,75 @@ footer p { display: flex; align-items: center; gap: .4rem; }
         </a>
     </footer>
 
+
+
+
+
+    <!-- Hint confirm dialog -->
+    <div id="hint-confirm">
+        <div id="hint-confirm-box">
+            <p>are you sure you want to<br>view all commands?</p>
+            <div class="hint-confirm-btns">
+                <button id="hint-yes">yes</button>
+                <button id="hint-no">no</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commands list -->
+    <div id="commands-list">
+        <div id="commands-box">
+            <h3>// all commands</h3>
+            <div class="cmd-row"><span class="cmd-key">chungus</span><span class="cmd-desc">never gonna give you up</span></div>
+            <div class="cmd-row"><span class="cmd-key">shivansh</span><span class="cmd-desc">something sweet</span></div>
+            <div class="cmd-row"><span class="cmd-key">cutie</span><span class="cmd-desc">a little surprise</span></div>
+            <div class="cmd-row"><span class="cmd-key">dl91</span><span class="cmd-desc">open a playlist</span></div>
+            <div class="cmd-row"><span class="cmd-key">matrix</span><span class="cmd-desc">there is no spoon</span></div>
+            <div class="cmd-row"><span class="cmd-key">nostalgia</span><span class="cmd-desc">lo-fi to study/relax to</span></div>
+            <div class="cmd-row"><span class="cmd-key">konami</span><span class="cmd-desc">↑↑↓↓←→←→</span></div>
+            <div class="cmd-row"><span class="cmd-key">debug</span><span class="cmd-desc">run diagnostics</span></div>
+            <div class="cmd-row"><span class="cmd-key">void</span><span class="cmd-desc">stare into the abyss</span></div>
+            <div class="cmd-row"><span class="cmd-key">hint</span><span class="cmd-desc">you already know</span></div>
+            <button id="commands-close">← close</button>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- Debug terminal -->
+    <div id="debug-terminal">
+        <div id="debug-output"></div>
+        <button class="debug-exit" id="debug-exit">[ exit ]</button>
+    </div>
+
+    <!-- Void overlay -->
+    <div id="void-overlay">
+        <div id="void-cursor"></div>
+    </div>
+
+    <!-- Love popup -->
+    <div id="love-popup">
+        <span class="love-msg">i love you ♥</span>
+    </div>
+
+    <!-- Matrix overlay -->
+    <div id="matrix-overlay">
+        <canvas id="matrix-canvas"></canvas>
+        <p class="matrix-exit">click anywhere to exit</p>
+    </div>
+
+    <!-- Password modal -->
+    <div id="pw-modal">
+        <div id="pw-box">
+            <p>🔒 you found something.<br>enter the password.</p>
+            <input id="pw-input" type="password" placeholder="••••••••" autocomplete="off" />
+            <div>
+                <button id="pw-submit">enter</button>
+                <button id="pw-cancel">cancel</button>
+            </div>
+        </div>
+    </div>
+
     <div id="popup" class="popup">thanks for visiting!</div>
 
 </main>
@@ -969,13 +1266,16 @@ document.addEventListener('DOMContentLoaded', () => {
         void heartBtn.offsetWidth; // reflow to restart
         heartBtn.classList.add('beat');
 
-        // Flying hearts
-        for (let i = 0; i < 8; i++) {
-            const h = document.createElement('i');
-            h.className = 'fa-solid fa-heart heart';
-            h.style.cssText = `left:${5+Math.random()*90}vw;bottom:3rem;animation-delay:${Math.random()*.4}s`;
-            document.body.appendChild(h);
-            h.addEventListener('animationend', () => h.remove());
+        // Flying hearts (throttled)
+        const existingHearts = document.querySelectorAll('.heart').length;
+        if (existingHearts < 12) {
+            for (let i = 0; i < 4; i++) {
+                const h = document.createElement('i');
+                h.className = 'fa-solid fa-heart heart';
+                h.style.cssText = `left:${5+Math.random()*90}vw;bottom:3rem;animation-delay:${Math.random()*.3}s;will-change:transform,opacity`;
+                document.body.appendChild(h);
+                h.addEventListener('animationend', () => h.remove());
+            }
         }
 
         // Popup
@@ -987,6 +1287,180 @@ document.addEventListener('DOMContentLoaded', () => {
         if (count === 1) {
             spotifyReveal.style.display = 'flex';
         }
+        // Open password modal at every 10 clicks
+        if (count % 10 === 0) {
+            count = 0;
+            document.getElementById('pw-modal').classList.add('open');
+            setTimeout(() => document.getElementById('pw-input').focus(), 50);
+        }
+    });
+
+    // ── Password modal logic ───────────────────────────────────
+    const pwModal  = document.getElementById('pw-modal');
+    const pwInput  = document.getElementById('pw-input');
+    const pwSubmit = document.getElementById('pw-submit');
+    const pwCancel = document.getElementById('pw-cancel');
+
+    const showLove = () => {
+        const lp = document.getElementById('love-popup');
+        lp.classList.add('open');
+        // spawn hearts
+        for (let i = 0; i < 10; i++) {
+            const h = document.createElement('i');
+            h.className = 'fa-solid fa-heart heart';
+            h.style.cssText = `left:${5+Math.random()*90}vw;bottom:3rem;animation-delay:${Math.random()*.6}s;font-size:${1+Math.random()*1.5}rem;will-change:transform,opacity`;
+            document.body.appendChild(h);
+            h.addEventListener('animationend', () => h.remove());
+        }
+        setTimeout(() => lp.classList.remove('open'), 2500);
+    };
+
+    const showMatrix = () => {
+        const overlay = document.getElementById('matrix-overlay');
+        const canvas  = document.getElementById('matrix-canvas');
+        overlay.classList.add('open');
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const ctx = canvas.getContext('2d');
+        const cols = Math.floor(canvas.width / 14);
+        const drops = Array(cols).fill(1);
+        const chars = 'アイウエオカキクケコサシスセソタチツテトABCDEF0123456789';
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0,0,0,.05)';
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = '#0f0'; ctx.font = '14px monospace';
+            drops.forEach((y,i) => {
+                ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*14, y*14);
+                if (y*14 > canvas.height && Math.random() > .975) drops[i] = 0;
+                drops[i]++;
+            });
+        };
+        let raf = setInterval(draw, 40);
+        overlay.onclick = () => {
+            clearInterval(raf);
+            overlay.classList.remove('open');
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+        };
+    };
+
+    // hint confirm — yes does nothing, no opens commands
+    const showHintConfirm = () => {
+        const hintEl = document.getElementById('hint-confirm');
+        hintEl.classList.add('open');
+        document.getElementById('hint-yes').onclick = () => {
+            hintEl.classList.remove('open');
+            // yes = does nothing, just closes
+        };
+        document.getElementById('hint-no').onclick = () => {
+            hintEl.classList.remove('open');
+            setTimeout(() => document.getElementById('commands-list').classList.add('open'), 50);
+        };
+    };
+    document.getElementById('commands-close').addEventListener('click', () => {
+        document.getElementById('commands-list').classList.remove('open');
+    });
+
+    // lo-fi player
+    const showLofi = () => {
+        window.open('https://www.youtube.com/watch?v=jfKfPfyJRdk', '_blank');
+    };
+
+    // confetti
+    const showKonami = () => {
+        const colors = ['#D6536D','#75a5fe','#1DB954','#ffd700','#ff6b6b','#a29bfe'];
+        for (let i = 0; i < 120; i++) {
+            const c = document.createElement('div');
+            c.className = 'confetti-piece';
+            c.style.cssText = `
+                left: ${Math.random()*100}vw;
+                background: ${colors[Math.floor(Math.random()*colors.length)]};
+                border-radius: ${Math.random() > .5 ? '50%' : '0'};
+                animation-duration: ${1.5 + Math.random()*2}s;
+                animation-delay: ${Math.random()*.8}s;
+                width: ${6+Math.random()*6}px;
+                height: ${6+Math.random()*6}px;
+            `;
+            document.body.appendChild(c);
+            c.addEventListener('animationend', () => c.remove());
+        }
+    };
+
+    // debug terminal
+    const showDebug = () => {
+        const term = document.getElementById('debug-terminal');
+        const out  = document.getElementById('debug-output');
+        term.classList.add('open');
+        out.innerHTML = '';
+        const lines = [
+            '> initializing session...',
+            `> user agent: ${navigator.userAgent.slice(0,60)}...`,
+            `> screen: ${screen.width}x${screen.height}`,
+            `> timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
+            `> language: ${navigator.language}`,
+            `> platform: ${navigator.platform}`,
+            '> scanning files... [████████░░] 80%',
+            '> scanning files... [██████████] 100%',
+            '> WARNING: suspicious taste in music detected',
+            '> WARNING: too many GitHub repos',
+            '> running diagnostics on portfolio visitor...',
+            '> result: probably a cool person',
+            '> session logged. have a good day.',
+            '> _',
+        ];
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i >= lines.length) { clearInterval(interval); return; }
+            out.innerHTML += lines[i] + '<br>';
+            i++;
+        }, 220);
+        document.getElementById('debug-exit').onclick = () => {
+            clearInterval(interval);
+            term.classList.remove('open');
+            out.innerHTML = '';
+        };
+    };
+
+    // void
+    const showVoid = () => {
+        const v = document.getElementById('void-overlay');
+        v.classList.add('open');
+        setTimeout(() => v.classList.remove('open'), 3000);
+    };
+
+    const secrets = {
+        'chungus':  () => window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank'),
+        'shivansh': () => showLove(),
+        'cutie':    () => window.open('https://www.youtube.com/watch?v=2AbqqxbKS3o', '_blank'),
+        'dl91':     () => window.open('https://open.spotify.com/playlist/4pt9orlLW8djFkW1OIuEwa?si=f344fa9d812c4a35', '_blank'),
+        'matrix':   () => showMatrix(),
+        'nostalgia':() => showLofi(),
+        'konami':   () => showKonami(),
+        'debug':    () => showDebug(),
+        'void':     () => showVoid(),
+        'hint':     () => showHintConfirm(),
+    };
+
+    const tryPassword = () => {
+        const val = pwInput.value.trim().toLowerCase();
+        const action = secrets[val];
+        if (action) {
+            pwModal.classList.remove('open');
+            pwInput.value = '';
+            action();
+        } else {
+            pwInput.classList.remove('wrong');
+            void pwInput.offsetWidth;
+            pwInput.classList.add('wrong');
+            pwInput.value = '';
+            setTimeout(() => pwInput.classList.remove('wrong'), 400);
+        }
+    };
+
+    pwSubmit.addEventListener('click', tryPassword);
+    pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryPassword(); });
+    pwCancel.addEventListener('click', () => {
+        pwModal.classList.remove('open');
+        pwInput.value = '';
     });
 
 
