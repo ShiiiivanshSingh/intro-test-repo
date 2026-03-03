@@ -259,6 +259,8 @@ ul.cards li > a.gh:hover {
 }
 .link-list a:hover { color: var(--accent) !important; border-color: var(--accent) !important; }
 
+
+
 /* ── Footer ──────────────────────────────────────────────────── */
 footer {
     margin-top: calc(var(--sp)*3);
@@ -273,7 +275,7 @@ footer i:hover { color: var(--text); transform: scale(1.2); }
 .heart {
     position: fixed; font-size: 1.4rem; color: var(--accent);
     pointer-events: none;
-    animation: fIn .3s forwards, fUp 4s ease-out forwards;
+    animation: fIn 10s forwards, fUp 10s ease-out forwards;
     opacity: 0; z-index: 8990;
 }
 @keyframes fUp {
@@ -285,13 +287,13 @@ footer i:hover { color: var(--text); transform: scale(1.2); }
 /* ── Popup ───────────────────────────────────────────────────── */
 .popup {
     display: none; position: fixed;
-    bottom: 2rem; left: 50%; transform: translateX(-50%);
+    bottom: 5rem; left: 50%; transform: translateX(-50%);
     background: var(--bg); color: var(--text);
     border: 1px solid var(--muted);
     padding: .5rem 1rem; font-size: .8rem;
-    z-index: 8985; opacity: 0; white-space: nowrap;
+    z-index: 16985; opacity: 0; white-space: nowrap;
 }
-.popup.show { display: block; animation: pIn .3s forwards; }
+.popup.show { display: block; animation: pIn .5s forwards; }
 .popup.hide { animation: pOut .5s forwards; }
 @keyframes pIn {
     from { opacity:0; transform: translateX(-50%) translateY(8px); }
@@ -395,8 +397,22 @@ footer i:hover { color: var(--text); transform: scale(1.2); }
 
     <section id="github" class="sec">
         <h2>github activity</h2>
+    
         <div class="graph-wrap">
-            <img src="https://ghchart.rshah.org/ShiiiivanshSingh" alt="GitHub contributions" loading="lazy">
+            <a href="https://github.com/ShiiiivanshSingh" target="_blank" rel="noopener">
+                <img 
+                    src="https://ghchart.rshah.org/f5f/ShiiiivanshSingh" 
+                  
+                    alt="Contribution graph for ShiiiivanshSingh on GitHub"
+                    loading="lazy"
+                    onerror="this.style.display='none'; document.getElementById('gh-fallback').style.display='block';"
+                >
+            </a>
+    
+            <p id="gh-fallback" style="display:none;">
+                Unable to load contribution graph. 
+                <a href="https://github.com/ShiiiivanshSingh" target="_blank">View profile directly</a>.
+            </p>
         </div>
     </section>
 
@@ -529,7 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         popup.classList.remove('hide'); popup.classList.add('show');
         clearTimeout(timer);
-        timer = setTimeout(() => { popup.classList.remove('show'); popup.classList.add('hide'); }, 2500);
+        timer = setTimeout(() => { popup.classList.remove('show'); popup.classList.add('hide'); }, 1500);
     });
 
     // Service worker
